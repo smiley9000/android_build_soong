@@ -22,6 +22,7 @@ import json
 import os
 import subprocess
 import sys
+import datetime
 
 TEST_KEY_DIR = "build/make/target/product/security"
 
@@ -105,8 +106,9 @@ def parse_args():
   config["BuildVersionTags"] = build_version_tags
 
   raw_date = args.date_file.read().strip()
-  config["Date"] = subprocess.check_output(["date", "-d", f"@{raw_date}"], text=True).strip()
-  config["DateUtc"] = subprocess.check_output(["date", "-d", f"@{raw_date}", "+%s"], text=True).strip()
+  ts = int(raw_date)
+  config["Date"] = datetime.datetime.utcfromtimestamp(ts).strftime("%a %b %d %H:%M:%S UTC %Y")
+  config["DateUtc"] = str(ts)
 
   # build_desc is human readable strings that describe this build. This has the same info as the
   # build fingerprint.
